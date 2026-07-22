@@ -1,95 +1,142 @@
-# Sortir Sampah - Fullstack
+# SmartTrash
 
-Proyek lengkap: **frontend** (Vite + Three.js, tema taman) dan **backend** (FastAPI +
-MongoDB Atlas) untuk sistem Kelas, Akun, Poin, dan Leaderboard.
+SmartTrash adalah proyek pengelolaan sampah berbasis web yang menggabungkan antarmuka interaktif, klasifikasi gambar berbasis AI, dan sistem poin/leaderboard untuk mendorong kesadaran memilah sampah secara lebih menarik.
 
+## Ringkasan Proyek
+
+Proyek ini terdiri dari dua bagian utama:
+
+- Frontend: antarmuka web interaktif berbasis Vite dan Three.js untuk menampilkan pengalaman visual berupa taman digital dan tong sampah.
+- Backend: API berbasis FastAPI yang menangani data kelas, akun, poin, leaderboard, serta proxy klasifikasi gambar ke model AI.
+
+## Fitur Utama
+
+- Klasifikasi gambar sampah menggunakan model AI melalui backend
+- Visualisasi interaktif dengan animasi 3D dan elemen taman
+- Sistem akun pengguna sederhana
+- Sistem poin dan leaderboard per kelas
+- API RESTful untuk pengelolaan data
+
+## Teknologi yang Digunakan
+
+### Frontend
+
+- Vite
+- JavaScript
+- Three.js
+
+### Backend
+
+- Python
+- FastAPI
+- MongoDB Atlas
+- Gradio Client
+
+## Struktur Proyek
+
+```text
+SmartTrash/
+├── backend/         # API FastAPI dan logika bisnis
+├── frontend/        # Antarmuka pengguna berbasis Vite
+├── README.md        # Dokumentasi proyek
+└── CARA_JALANKAN.md # Panduan menjalankan proyek secara lokal
 ```
-sortir-sampah-fullstack/
-├── frontend/     # Website (Vite): kamera, animasi 3D, upload panel, dst.
-└── backend/      # API (FastAPI + MongoDB Atlas): kelas, akun, poin, leaderboard
-```
 
-Model klasifikasi AI (FastAPI + TensorFlow, buat dideploy terpisah ke Hugging Face
-Spaces) ada di paket zip lain (`smart-trash-bin-api.zip`) yang sudah dikirim
-sebelumnya -- itu proyek yang berdiri sendiri, dipanggil dari
-`frontend/src/ai-classifier.js`.
+## Prasyarat
 
-## Cara menjalankan semuanya secara lokal
+Sebelum menjalankan proyek, pastikan perangkat Anda telah menginstal:
 
-### 1. Backend (FastAPI + MongoDB Atlas)
+- Python 3.10+
+- Node.js 18+
+- npm
+- MongoDB Atlas account
+- Akses ke Hugging Face Space atau model AI yang kompatibel
+
+## Menjalankan Proyek Secara Lokal
+
+### 1. Backend
+
 ```bash
 cd backend
-python -m venv .venv && source .venv/bin/activate   # atau .venv\Scripts\activate di Windows
+python -m venv .venv
+source .venv/bin/activate
+# Untuk Windows PowerShell:
+# .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-cp .env.example .env
-# isi MONGODB_URI di .env dengan connection string dari MongoDB Atlas-mu
+```
+
+Buat file `.env` di folder backend dan isi variabel berikut:
+
+```env
+MONGODB_URI=your_mongodb_connection_string
+HF_SPACE_ID=your_huggingface_space_id
+HF_TOKEN=your_huggingface_token
+```
+
+Lalu jalankan server:
+
+```bash
 uvicorn app:app --reload --port 8000
 ```
-Backend akan jalan di `http://localhost:8000`. Cek dokumentasi otomatis Swagger di
-`http://localhost:8000/docs`.
 
-### 2. Frontend (Vite)
+Backend akan tersedia di:
+
+- http://localhost:8000
+- Dokumentasi API: http://localhost:8000/docs
+
+### 2. Frontend
+
 ```bash
 cd frontend
 npm install
-cp .env.example .env
-# isi VITE_ANTHROPIC_API_KEY (atau ganti ai-classifier.js ke model ML-mu)
-# VITE_BACKEND_API_URL default sudah http://localhost:8000, sesuaikan kalau perlu
 npm run dev
 ```
-Buka `http://localhost:5173`.
 
-## Alur data lengkap
+Frontend akan tersedia di:
 
-```
-[Kamera/Upload foto di frontend]
-        |
-        v
-[ai-classifier.js] --> model AI (Claude atau smart-trash-bin-api-mu di HF Spaces)
-        |
-        v
-   { category: "kimia" | "daur" | "residu", object_name, reason }
-        |
-        v
-[Animasi 3D: foto terbang ke tong yang sesuai]
-        |
-        v
-[account-store.js] --> POST /api/points ke backend FastAPI
-        |
-        v
-   [MongoDB Atlas: koleksi "classes" bertambah poinnya]
-        |
-        v
-[Leaderboard di frontend] <-- GET /api/leaderboard dari backend
+- http://localhost:5173
+
+## Alur Kerja Aplikasi
+
+```text
+Pengguna mengunggah gambar melalui frontend
+        ↓
+Frontend mengirimkan data ke backend
+        ↓
+Backend memproses gambar melalui model AI
+        ↓
+Hasil klasifikasi dikembalikan ke frontend
+        ↓
+Sistem menampilkan animasi dan menambah poin ke akun/kelas terkait
 ```
 
-## Endpoint backend yang tersedia
+## Endpoint Penting
 
-| Method | Path | Keterangan |
-|---|---|---|
-| POST | `/api/classes` | Buat kelas baru |
-| GET | `/api/classes` | Daftar semua kelas |
-| GET | `/api/leaderboard` | Kelas diurutkan berdasar poin (tertinggi dulu) |
-| POST | `/api/accounts` | Buat akun baru, terikat ke satu kelas |
-| GET | `/api/accounts/{account_id}` | Ambil info akun |
-| POST | `/api/points` | Tambah poin ke kelas (dipanggil otomatis setelah AI berhasil klasifikasi) |
+| Method | Path                       | Deskripsi                         |
+| ------ | -------------------------- | --------------------------------- |
+| GET    | /api/health                | Cek status server                 |
+| GET    | /api/classes               | Melihat daftar kelas              |
+| POST   | /api/classes               | Membuat kelas baru                |
+| GET    | /api/leaderboard           | Melihat leaderboard               |
+| POST   | /api/accounts              | Membuat akun pengguna             |
+| GET    | /api/accounts/{account_id} | Melihat data akun                 |
+| POST   | /api/classify              | Mengirim gambar untuk klasifikasi |
 
-## Deploy ke produksi
+## Deployment
 
-**Backend** -- bisa dideploy ke Render, Railway, Fly.io, atau Hugging Face Spaces
-(Docker SDK, sama seperti model ML-mu). `Dockerfile` sudah disediakan di folder
-`backend/`. Jangan lupa set environment variable `MONGODB_URI` di platform hosting-mu
-(jangan commit `.env` asli ke git).
+Proyek ini dapat di-deploy ke platform seperti:
 
-**Frontend** -- bisa dideploy ke Vercel, Netlify, atau Cloudflare Pages (`npm run
-build` menghasilkan folder `dist/` statis). Set environment variable
-`VITE_BACKEND_API_URL` ke URL backend produksi, dan `VITE_ANTHROPIC_API_KEY` (atau
-ganti ke model ML-mu) sebelum build.
+- Backend: Render, Railway, Fly.io, atau Hugging Face Spaces
+- Frontend: Vercel, Netlify, atau Cloudflare Pages
 
-## Catatan keamanan
+Pastikan variabel environment sensitif seperti token dan URI database disimpan dengan aman dan tidak di-commit ke repository publik.
 
-- CORS di backend saat ini `allow_origins=["*"]` (bebas) -- untuk produksi, batasi ke
-  domain frontend-mu saja.
-- Sistem akun ini **tanpa password** (cocok untuk pemakaian internal sekolah, bukan
-  untuk kebutuhan keamanan serius). `account_id` adalah UUID acak yang disimpan di
-  `localStorage` browser -- siapa pun yang tahu ID itu bisa memakai akun tersebut.
+## Catatan Keamanan
+
+- CORS saat ini diset terbuka untuk mempermudah pengembangan lokal.
+- Untuk production, sebaiknya batasi origin yang diizinkan.
+- Sistem akun pada proyek ini masih sederhana dan tidak dirancang untuk kebutuhan autentikasi keamanan tinggi.
+
+## Kontribusi
+
+Kontribusi sangat terbuka. Jika Anda ingin mengembangkan proyek ini lebih lanjut, silakan buat branch baru dan kirim pull request.
