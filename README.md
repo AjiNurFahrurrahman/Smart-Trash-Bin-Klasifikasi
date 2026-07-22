@@ -1,32 +1,33 @@
 # SmartTrash
 
-SmartTrash adalah proyek pengelolaan sampah berbasis web yang menggabungkan antarmuka interaktif, klasifikasi gambar berbasis AI, dan sistem poin/leaderboard untuk mendorong kesadaran memilah sampah secara lebih menarik.
+SmartTrash adalah proyek web interaktif yang menggabungkan teknologi AI, frontend modern, dan backend API untuk membantu pengguna memahami pentingnya memilah sampah dengan cara yang lebih menarik.
 
-## Ringkasan Proyek
+## Tentang Proyek
 
-Proyek ini terdiri dari dua bagian utama:
+SmartTrash dirancang sebagai solusi digital edukatif dan visual yang menghubungkan:
 
-- Frontend: antarmuka web interaktif berbasis Vite dan Three.js untuk menampilkan pengalaman visual berupa taman digital dan tong sampah.
-- Backend: API berbasis FastAPI yang menangani data kelas, akun, poin, leaderboard, serta proxy klasifikasi gambar ke model AI.
+- frontend interaktif berbasis Vite dan Three.js,
+- backend API berbasis FastAPI,
+- sistem klasifikasi gambar menggunakan model AI,
+- serta fitur akun, poin, dan leaderboard untuk mendukung pengalaman pengguna.
 
 ## Fitur Utama
 
-- Klasifikasi gambar sampah menggunakan model AI melalui backend
-- Visualisasi interaktif dengan animasi 3D dan elemen taman
+- Klasifikasi gambar sampah berbasis AI
+- Antarmuka visual interaktif dengan animasi 3D
 - Sistem akun pengguna sederhana
-- Sistem poin dan leaderboard per kelas
+- Penghargaan poin per kelas
+- Leaderboard untuk memantau aktivitas pengguna
 - API RESTful untuk pengelolaan data
 
 ## Teknologi yang Digunakan
 
 ### Frontend
-
 - Vite
 - JavaScript
 - Three.js
 
 ### Backend
-
 - Python
 - FastAPI
 - MongoDB Atlas
@@ -36,21 +37,21 @@ Proyek ini terdiri dari dua bagian utama:
 
 ```text
 SmartTrash/
-├── backend/         # API FastAPI dan logika bisnis
-├── frontend/        # Antarmuka pengguna berbasis Vite
-├── README.md        # Dokumentasi proyek
-└── CARA_JALANKAN.md # Panduan menjalankan proyek secara lokal
+├── backend/               # API FastAPI dan logika bisnis
+├── frontend/              # Antarmuka pengguna berbasis Vite
+├── README.md              # Dokumentasi proyek
+└── CARA_JALANKAN.md       # Panduan menjalankan proyek secara lokal
 ```
 
 ## Prasyarat
 
-Sebelum menjalankan proyek, pastikan perangkat Anda telah menginstal:
+Pastikan perangkat Anda sudah memiliki:
 
 - Python 3.10+
 - Node.js 18+
 - npm
-- MongoDB Atlas account
-- Akses ke Hugging Face Space atau model AI yang kompatibel
+- Akun MongoDB Atlas
+- Akses ke model AI atau Hugging Face Space
 
 ## Menjalankan Proyek Secara Lokal
 
@@ -73,16 +74,15 @@ HF_SPACE_ID=your_huggingface_space_id
 HF_TOKEN=your_huggingface_token
 ```
 
-Lalu jalankan server:
+Jalankan server:
 
 ```bash
 uvicorn app:app --reload --port 8000
 ```
 
-Backend akan tersedia di:
-
+Akses:
 - http://localhost:8000
-- Dokumentasi API: http://localhost:8000/docs
+- http://localhost:8000/docs
 
 ### 2. Frontend
 
@@ -92,8 +92,7 @@ npm install
 npm run dev
 ```
 
-Frontend akan tersedia di:
-
+Akses:
 - http://localhost:5173
 
 ## Alur Kerja Aplikasi
@@ -101,9 +100,7 @@ Frontend akan tersedia di:
 ```text
 Pengguna mengunggah gambar melalui frontend
         ↓
-Frontend mengirimkan data ke backend
-        ↓
-Backend memproses gambar melalui model AI
+Backend memproses gambar menggunakan model AI
         ↓
 Hasil klasifikasi dikembalikan ke frontend
         ↓
@@ -112,31 +109,31 @@ Sistem menampilkan animasi dan menambah poin ke akun/kelas terkait
 
 ## Endpoint Penting
 
-| Method | Path                       | Deskripsi                         |
-| ------ | -------------------------- | --------------------------------- |
-| GET    | /api/health                | Cek status server                 |
-| GET    | /api/classes               | Melihat daftar kelas              |
-| POST   | /api/classes               | Membuat kelas baru                |
-| GET    | /api/leaderboard           | Melihat leaderboard               |
-| POST   | /api/accounts              | Membuat akun pengguna             |
-| GET    | /api/accounts/{account_id} | Melihat data akun                 |
-| POST   | /api/classify              | Mengirim gambar untuk klasifikasi |
+| Method | Path | Deskripsi |
+|---|---|---|
+| GET | /api/health | Mengecek status server |
+| GET | /api/classes | Melihat daftar kelas |
+| POST | /api/classes | Membuat kelas baru |
+| GET | /api/leaderboard | Melihat leaderboard |
+| POST | /api/accounts | Membuat akun pengguna |
+| GET | /api/accounts/{account_id} | Melihat data akun |
+| POST | /api/classify | Mengirim gambar untuk klasifikasi |
 
 ## Deployment
 
-Proyek ini dapat di-deploy ke platform seperti:
+Proyek ini dapat di-deploy ke berbagai platform seperti:
 
 - Backend: Render, Railway, Fly.io, atau Hugging Face Spaces
 - Frontend: Vercel, Netlify, atau Cloudflare Pages
 
-Pastikan variabel environment sensitif seperti token dan URI database disimpan dengan aman dan tidak di-commit ke repository publik.
+Pastikan variabel sensitif seperti token dan URI database disimpan dengan aman dan tidak dipublikasikan ke repository publik.
 
 ## Catatan Keamanan
 
 - CORS saat ini diset terbuka untuk mempermudah pengembangan lokal.
-- Untuk production, sebaiknya batasi origin yang diizinkan.
-- Sistem akun pada proyek ini masih sederhana dan tidak dirancang untuk kebutuhan autentikasi keamanan tinggi.
+- Untuk lingkungan produksi, disarankan membatasi origin yang diizinkan.
+- Sistem akun pada proyek ini masih sederhana dan tidak ditujukan untuk kebutuhan autentikasi keamanan tinggi.
 
 ## Kontribusi
 
-Kontribusi sangat terbuka. Jika Anda ingin mengembangkan proyek ini lebih lanjut, silakan buat branch baru dan kirim pull request.
+Jika Anda ingin mengembangkan proyek ini lebih lanjut, silakan buat branch baru lalu kirim pull request.
