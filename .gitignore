@@ -1,1 +1,22 @@
-smart-trash-bin-api/
+# Local environment files
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.venv/
+
+# Node modules
+node_modules/
+
+# Build output
+/dist/
+
+# Local IDE files
+.vscode/
+
+# Large AI model artifacts (keep in Git LFS or external storage)
+# smart-trash-bin-api/
+
