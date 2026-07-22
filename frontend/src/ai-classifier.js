@@ -11,7 +11,8 @@
 // Mengembalikan objek { object_name, category, reason } dengan category
 // salah satu dari 'kimia' | 'daur' | 'residu'.
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_API_URL || "http://localhost:8000";
+const BACKEND_URL =
+  import.meta.env.VITE_BACKEND_API_URL || "http://localhost:8000";
 
 export async function classifyImage(imageDataUrl) {
   const blob = await (await fetch(imageDataUrl)).blob();
@@ -37,10 +38,13 @@ export async function classifyImage(imageDataUrl) {
 
   const parsed = await response.json();
 
-  const category = ['kimia', 'daur', 'residu'].includes(parsed.category) ? parsed.category : 'residu';
+  const category = ["kimia", "daur", "residu"].includes(parsed.category)
+    ? parsed.category
+    : "residu";
   return {
-    object_name: parsed.object_name || 'Benda tidak diketahui',
+    object_name: parsed.object_name || "Benda tidak diketahui",
     category,
-    reason: parsed.reason || ''
+    reason: parsed.reason || "",
+    confidence: parsed.confidence ?? null,
   };
 }

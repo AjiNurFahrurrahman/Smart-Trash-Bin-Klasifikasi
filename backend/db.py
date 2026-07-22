@@ -19,6 +19,7 @@ _db = _client[DB_NAME]
 
 classes_collection: Collection = _db["classes"]
 accounts_collection: Collection = _db["accounts"]
+classifications_collection: Collection = _db["classifications"]
 
 # Index supaya slug kelas unik & pencarian cepat
 classes_collection.create_index("slug", unique=True)

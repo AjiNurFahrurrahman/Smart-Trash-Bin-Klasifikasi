@@ -138,6 +138,7 @@ async function analyzeImage() {
       result.object_name,
       category,
       result.reason,
+      result.confidence,
     );
 
     // Tambahkan poin ke kelas aktif (kalau user sudah punya akun/kelas)
@@ -161,7 +162,7 @@ async function analyzeImage() {
   }
 }
 
-function getResultDescription(objectName, category, reason) {
+function getResultDescription(objectName, category, reason, confidence) {
   const categoryName =
     {
       kimia: "Tong Limbah Kimia",
@@ -169,9 +170,16 @@ function getResultDescription(objectName, category, reason) {
       residu: "Tong Tidak Bisa Daur Ulang",
     }[category] || "Tong Tidak Dikenal";
 
-  const description = reason
+  let description = reason
     ? reason
     : "Sampah ini dikategorikan sebagai plastik, jadi dapat didaur ulang.";
+
+  if (typeof confidence === "number" || typeof confidence === "string") {
+    const confidenceValue = `${confidence}`.replace(/[^0-9.]/g, "");
+    if (confidenceValue) {
+      description = `Dengan keyakinan ${confidenceValue}%. ${description}`;
+    }
+  }
 
   return `Sampah ini dikategorikan sebagai ${objectName}, jadi dapat dimasukkan ke ${categoryName}. ${description}`;
 }

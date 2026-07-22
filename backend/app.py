@@ -14,12 +14,15 @@ Koleksi MongoDB:
 - accounts: { _id, account_name, class_slug, class_name }
 """
 
+import datetime
 import json
+import mimetypes
 import os
 import re
 import tempfile
 import uuid
 
+from bson.binary import Binary
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
@@ -45,7 +48,7 @@ _gc_utils.json_schema_to_python_type = _make_safe(_gc_utils.json_schema_to_pytho
 if hasattr(_gc_utils, "_json_schema_to_python_type"):
     _gc_utils._json_schema_to_python_type = _make_safe(_gc_utils._json_schema_to_python_type)
 
-from db import classes_collection, accounts_collection
+from db import classes_collection, accounts_collection, classifications_collection
 from models import CreateClassRequest, CreateAccountRequest, AddPointsRequest
 
 load_dotenv()
@@ -222,12 +225,31 @@ async def classify_image(file: UploadFile = File(...)):
     if category not in KATEGORI_VALID:
         category = "residu"
 
-    return {
+    response_payload = {
         "object_name": (parsed.get("object_name") if isinstance(parsed, dict) else None) or "Benda tidak diketahui",
         "category": category,
         "reason": (parsed.get("reason") if isinstance(parsed, dict) else None) or "",
         "confidence": parsed.get("confidence") if isinstance(parsed, dict) else None,
     }
+
+    # Simpan record klasifikasi ke MongoDB
+    try:
+        classifications_collection.insert_one({
+            "object_name": response_payload["object_name"],
+            "category": response_payload["category"],
+            "reason": response_payload["reason"],
+            "confidence": response_payload["confidence"],
+            "created_at": datetime.utcnow(),
+            "image_name": file.filename,
+            "image_type": mimetypes.guess_type(file.filename or "upload.jpg")[0] or "image/jpeg",
+            "image_data": Binary(image_bytes),
+            "raw_response": parsed if isinstance(parsed, dict) else {"raw": str(parsed)},
+        })
+    except Exception:
+        # Jika penyimpanan ke database gagal, jangan blokir respons AI.
+        pass
+
+    return response_payload
 
 
 # ---------------- Poin ----------------
