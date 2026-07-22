@@ -1,0 +1,141 @@
+<div id="canvas-holder"></div>
+
+<div id="upload-panel" class="hidden">
+  <h1>Foto Sampahmu</h1>
+  <p id="panel-desc">
+    Ambil foto sebuah barang. AI akan membaca gambarnya dan menentukan tong mana
+    yang paling tepat — lalu benda itu akan "terbang" masuk ke tongnya.
+  </p>
+
+  <!-- Step 1: pilih sumber kamera -->
+  <div class="step active" id="step-select">
+    <div id="camera-options"></div>
+    <div id="camera-loading">Mendeteksi kamera...</div>
+    <div id="upload-fallback">
+      atau <a id="upload-link">unggah foto dari galeri/file</a>
+    </div>
+  </div>
+
+  <!-- Step 2: live preview kamera -->
+  <div class="step" id="step-camera">
+    <div id="camera-view-wrap">
+      <video id="camera-video" autoplay playsinline muted></video>
+    </div>
+    <div class="cam-controls">
+      <button id="switch-cam-btn">Ganti Kamera</button>
+      <button id="capture-btn">📸 Jepret</button>
+    </div>
+    <canvas id="capture-canvas"></canvas>
+  </div>
+
+  <!-- Step 3: hasil jepretan / unggahan, siap dianalisis -->
+  <div class="step" id="step-preview">
+    <div id="preview-thumb" style="display: block">
+      <img id="preview-img" src="" alt="preview" />
+    </div>
+    <button id="analyze-btn" style="display: block">ANALISIS FOTO</button>
+    <div id="retake-link" style="display: block">Ambil ulang</div>
+  </div>
+
+  <input type="file" id="file-input" accept="image/*" capture="environment" />
+  <div id="error-msg"></div>
+</div>
+
+<div id="camera-fab-label">Ketuk untuk mulai memotret sampah</div>
+<button id="camera-fab" aria-label="Buka kamera">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#20261f" stroke-width="1.8">
+    <path
+      d="M4 8h3l1.5-2h7L17 8h3a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1z"
+      stroke-linejoin="round"
+    />
+    <circle cx="12" cy="13" r="3.4" />
+  </svg>
+</button>
+
+<div id="status-line">
+  <div class="spinner"></div>
+  <span id="status-text">Menganalisis gambar...</span>
+</div>
+<div id="result-banner">
+  <div class="obj-name" id="result-obj">-</div>
+  <div class="cat-name" id="result-cat">-</div>
+  <div class="reason" id="result-reason"></div>
+</div>
+
+<div id="bin-info">
+  <div class="bin-info-title" id="bin-info-title">-</div>
+  <div class="bin-info-desc" id="bin-info-desc"></div>
+  <div class="bin-info-hint">Klik area lain untuk menutup</div>
+</div>
+
+<button class="corner-btn" id="leaderboard-btn" aria-label="Leaderboard Kelas">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#e8c468" stroke-width="1.8">
+    <path
+      d="M8 21h8M12 17v4M7 4h10v4a5 5 0 01-10 0V4z"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M7 6H4a1 1 0 00-1 1c0 2.5 1.8 4 4 4M17 6h3a1 1 0 011 1c0 2.5-1.8 4-4 4"
+    />
+  </svg>
+</button>
+<button class="corner-btn" id="class-btn" aria-label="Kelas & Akun">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#e8c468" stroke-width="1.8">
+    <path d="M12 3l9 4.5-9 4.5-9-4.5L12 3z" stroke-linejoin="round" />
+    <path d="M5 9.5V15c0 1.5 3 3 7 3s7-1.5 7-3V9.5" stroke-linecap="round" />
+  </svg>
+</button>
+
+<div class="corner-panel" id="leaderboard-panel">
+  <span class="close-x" data-close="leaderboard-panel">✕</span>
+  <h2>🏆 Leaderboard Kelas</h2>
+  <div class="panel-sub">
+    Ranking kelas berdasarkan total poin sortir sampah.
+  </div>
+  <div id="leaderboard-list"></div>
+</div>
+
+<div class="corner-panel" id="class-panel">
+  <span class="close-x" data-close="class-panel">✕</span>
+  <h2>Kelas & Akun</h2>
+
+  <div id="has-account-view" style="display: none">
+    <div class="current-class-box">
+      <div class="cc-label">AKUN AKTIF</div>
+      <div class="cc-value" id="current-account-name">-</div>
+      <div class="cc-label" style="margin-top: 8px">KELAS</div>
+      <div class="cc-value" id="current-class-name">-</div>
+    </div>
+    <button id="switch-class-btn">Ganti Kelas / Akun</button>
+  </div>
+
+  <div id="no-account-view">
+    <div class="class-tabs">
+      <div class="class-tab active" data-tab="join">Buat Akun di Kelas</div>
+      <div class="class-tab" data-tab="create">Buat Kelas Baru</div>
+    </div>
+
+    <div class="class-form active" id="form-join">
+      <label>Pilih Kelas</label>
+      <select id="join-class-select">
+        <option value="">-- pilih kelas --</option>
+      </select>
+      <label>Nama Akunmu</label>
+      <input type="text" id="join-account-name" placeholder="Misal: Budi" />
+      <button id="join-submit-btn">Buat Akun & Gabung</button>
+    </div>
+
+    <div class="class-form" id="form-create">
+      <label>Nama Kelas Baru</label>
+      <input type="text" id="create-class-name" placeholder="Misal: Kelas 4A" />
+      <label>Nama Akunmu</label>
+      <input type="text" id="create-account-name" placeholder="Misal: Budi" />
+      <button id="create-submit-btn">Buat Kelas & Akun</button>
+    </div>
+  </div>
+
+  <div
+    id="class-error-msg"
+    style="color: #ff9e8a; font-size: 12px; margin-top: 10px; display: none"
+  ></div>
+</div>
