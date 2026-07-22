@@ -1,0 +1,8 @@
+
+# Large AI/model files
+smart-trash-bin-api/*.keras filter=lfs diff=lfs merge=lfs -text
+smart-trash-bin-api/*.h5 filter=lfs diff=lfs merge=lfs -text
+smart-trash-bin-api/*.bin filter=lfs diff=lfs merge=lfs -text
+smart-trash-bin-api/*.pkl filter=lfs diff=lfs merge=lfs -text
+smart-trash-bin-api/*.onnx filter=lfs diff=lfs merge=lfs -text
+
