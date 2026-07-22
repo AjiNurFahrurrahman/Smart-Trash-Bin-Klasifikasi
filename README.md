@@ -23,11 +23,13 @@ SmartTrash dirancang sebagai solusi digital edukatif dan visual yang menghubungk
 ## Teknologi yang Digunakan
 
 ### Frontend
+
 - Vite
 - JavaScript
 - Three.js
 
 ### Backend
+
 - Python
 - FastAPI
 - MongoDB Atlas
@@ -81,6 +83,7 @@ uvicorn app:app --reload --port 8000
 ```
 
 Akses:
+
 - http://localhost:8000
 - http://localhost:8000/docs
 
@@ -93,6 +96,7 @@ npm run dev
 ```
 
 Akses:
+
 - http://localhost:5173
 
 ## Alur Kerja Aplikasi
@@ -109,15 +113,15 @@ Sistem menampilkan animasi dan menambah poin ke akun/kelas terkait
 
 ## Endpoint Penting
 
-| Method | Path | Deskripsi |
-|---|---|---|
-| GET | /api/health | Mengecek status server |
-| GET | /api/classes | Melihat daftar kelas |
-| POST | /api/classes | Membuat kelas baru |
-| GET | /api/leaderboard | Melihat leaderboard |
-| POST | /api/accounts | Membuat akun pengguna |
-| GET | /api/accounts/{account_id} | Melihat data akun |
-| POST | /api/classify | Mengirim gambar untuk klasifikasi |
+| Method | Path                       | Deskripsi                         |
+| ------ | -------------------------- | --------------------------------- |
+| GET    | /api/health                | Mengecek status server            |
+| GET    | /api/classes               | Melihat daftar kelas              |
+| POST   | /api/classes               | Membuat kelas baru                |
+| GET    | /api/leaderboard           | Melihat leaderboard               |
+| POST   | /api/accounts              | Membuat akun pengguna             |
+| GET    | /api/accounts/{account_id} | Melihat data akun                 |
+| POST   | /api/classify              | Mengirim gambar untuk klasifikasi |
 
 ## Deployment
 

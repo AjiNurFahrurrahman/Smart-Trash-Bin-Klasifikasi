@@ -134,7 +134,11 @@ async function analyzeImage() {
     resultObj.textContent = result.object_name;
     resultCat.textContent = meta.label;
     resultCat.style.color = meta.color;
-    resultReason.textContent = result.reason;
+    resultReason.textContent = getResultDescription(
+      result.object_name,
+      category,
+      result.reason,
+    );
 
     // Tambahkan poin ke kelas aktif (kalau user sudah punya akun/kelas)
     await accountPanel.awardPointsForCategory(category);
@@ -155,4 +159,19 @@ async function analyzeImage() {
     errorMsg.style.display = "block";
     analyzeBtn.disabled = false;
   }
+}
+
+function getResultDescription(objectName, category, reason) {
+  const categoryName =
+    {
+      kimia: "Tong Limbah Kimia",
+      daur: "Tong Daur Ulang",
+      residu: "Tong Tidak Bisa Daur Ulang",
+    }[category] || "Tong Tidak Dikenal";
+
+  const description = reason
+    ? reason
+    : "Sampah ini dikategorikan sebagai plastik, jadi dapat didaur ulang.";
+
+  return `Sampah ini dikategorikan sebagai ${objectName}, jadi dapat dimasukkan ke ${categoryName}. ${description}`;
 }
